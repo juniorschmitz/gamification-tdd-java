@@ -29,9 +29,9 @@ public class ArmazenamentoTest {
 	@Test
 	public void testArmazenaNovoUsuario() throws IOException {
 		Usuario user = new Usuario("usuario4");
+		user.adicionaPontos("bananona", 500);
 		armazenamento.registraNovoUser(user);
 		usuarios = armazenamento.leArquivo();
-		user.adicionaPontos("bananona", 500);
 		assertEquals("usuario4", usuarios.get(4).getNome());
 	}
 	
@@ -42,7 +42,7 @@ public class ArmazenamentoTest {
 		armazenamento.adicionaPontosUsuario(usuario, 100, "estrela");
 		assertEquals("O usuário joao possuí 100 pontos do tipo estrela", armazenamento.retornaPontos(usuario, "estrela"));
 		armazenamento.adicionaPontosUsuario(usuario, 200, "bananaaaaa");
-		assertEquals("O usuário joao possuí 200 pontos do tipo estrela", armazenamento.retornaPontos(usuario, "bananaaaaa"));
+		assertEquals("O usuário joao possuí 200 pontos do tipo bananaaaaa", armazenamento.retornaPontos(usuario, "bananaaaaa"));
 	}
 	
 //	@Test

@@ -31,7 +31,7 @@ public class Usuario {
 			Integer novapontuacao = _pontos.get(tipoponto) + quantidadepontos;
 			_pontos.replace(tipoponto, novapontuacao);
 		}
-		//System.out.println("PONTOS ADICIONADOS");
+//		System.out.println("PONTOS ADICIONADOS");
 	}
 	
 	public boolean recebeuAlgumPonto() {

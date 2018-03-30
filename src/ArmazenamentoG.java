@@ -22,16 +22,22 @@ public class ArmazenamentoG implements Armazenamento {
 	}
 
 	public void adicionaPontosUsuario(Usuario usuario, int pontos, String tipo) throws IOException {
-		if(usuarios.contains(usuario)) {
-			usuario.adicionaPontos(tipo, pontos);
-			salvaNovosPontosUsuario(usuario);
+		for(int i = 0; i < usuarios.size(); i++) {
+			if(usuarios.get(i).getNome() == usuario.getNome()) {
+				usuarios.get(i).adicionaPontos(tipo, pontos);
+				salvaNovosPontosUsuario(usuarios.get(i));
+			}
 		}
-		else throw new UsuarioNaoCadastradoException("Usuario nao cadastrado!!");
+//		if(usuarios.contains(usuario)) {
+//			usuario.adicionaPontos(tipo, pontos);
+//			salvaNovosPontosUsuario(usuario);
+//		}
+//		else throw new UsuarioNaoCadastradoException("Usuario nao cadastrado!!");
 	}
 	
 	public void salvaNovosPontosUsuario(Usuario usuario) throws IOException {
 		for(int i = 0; i < usuarios.size(); i++) {
-			boolean noterase = i == 0? false : true;
+//			boolean noterase = i == 0? false : true;
 			registraUserArquivo(usuarios.get(i));
 		}
 	}
@@ -71,13 +77,23 @@ public class ArmazenamentoG implements Armazenamento {
 	}
 	
 	public void registraNovoUser(Usuario user) throws IOException {
+		usuarios.clear();
 		usuarios = this.leArquivo();
+//		for(int i = 0; i < usuarios.size(); i++) {
+//			Usuario usuario = usuarios.get(i);
+//			System.out.println(usuario.getNome());
+//		}
 		if(usuarios.contains(user)) throw new UsuarioJaCadastradoException("Usuario ja estava cadastrado!!");
-		else this.registraUserArquivo(user);
+		else this.usuarios.add(user);
+		this.registraUserArquivo(user);
+//		else this.registraUserArquivo(user);
 	}
 	
-	public void registraUserArquivo(Usuario user) throws IOException {
+	/*public void registraUserArquivo(Usuario user) throws IOException {
 //		boolean noterase = usuarios.contains(user)? true : false;
+		//ArrayList<Usuario> usuariosaux = leArquivo();
+		//boolean noterase = usuariosaux.contains(user)? true : false;
+		
 		FileWriter writer = new FileWriter(this.caminhoarquivo, true);
 		PrintWriter	printer = new PrintWriter(writer);
 //		printer.printf("%n");
@@ -91,6 +107,29 @@ public class ArmazenamentoG implements Armazenamento {
 			printer.printf("ponto ");
 			printer.printf(elemento.getKey().toString() + " ");
 			printer.printf(pontos.get(elemento.getKey()) + "%n");
+		}
+		writer.close();
+	}*/
+	
+	public void registraUserArquivo(Usuario usuarioold) throws IOException {
+		FileWriter writer = new FileWriter(this.caminhoarquivo, false);
+		PrintWriter	printer = new PrintWriter(writer);
+		for(int i = 0; i < usuarios.size(); i++) {
+			Usuario user = usuarios.get(i);
+		//		printer.printf("%n");
+			printer.printf("user ");
+			printer.printf(user.getNome() + "%n");
+			HashMap<String, Integer> pontos = user.getPontos();
+			Set set = pontos.entrySet();
+			Iterator iterator = set.iterator();
+			while(iterator.hasNext()) {
+				Map.Entry elemento = (Map.Entry) iterator.next();
+				printer.printf("ponto ");
+				printer.printf(elemento.getKey().toString() + " ");
+				printer.printf(pontos.get(elemento.getKey()) + "%n");
+				System.out.println(elemento.getKey().toString());
+				System.out.println(pontos.get(elemento.getKey()));
+			}
 		}
 		writer.close();
 	}
