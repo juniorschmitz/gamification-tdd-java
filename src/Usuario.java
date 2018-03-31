@@ -31,7 +31,6 @@ public class Usuario {
 			Integer novapontuacao = _pontos.get(tipoponto) + quantidadepontos;
 			_pontos.replace(tipoponto, novapontuacao);
 		}
-//		System.out.println("PONTOS ADICIONADOS");
 	}
 	
 	public boolean recebeuAlgumPonto() {
@@ -50,7 +49,7 @@ public class Usuario {
 	}
 	
 	public ArrayList<String> todosTiposPontosRegistrados() throws UsuarioSemPontosRegistradosException {
-		if(_pontos.isEmpty()) throw new UsuarioSemPontosRegistradosException("Usuário não possuí pontos registrados!!");
+		if(_pontos.isEmpty()) throw new UsuarioSemPontosRegistradosException("Usuario nao possui pontos registrados!!");
 		else {
 			ArrayList<String> tiposdepontosencontrados = new ArrayList<>();
 			Set set = _pontos.entrySet();
@@ -63,18 +62,16 @@ public class Usuario {
 		}
 	}
 	
-	public String todosTiposEValoresPontos() throws UsuarioSemPontosRegistradosException {
-		if(_pontos.isEmpty()) throw new UsuarioSemPontosRegistradosException("Usuário não possuí pontos registrados!!");
-		else {
-			String aux = "";
-			Set set = _pontos.entrySet();
-			Iterator iterator = set.iterator();
-			while(iterator.hasNext()) {
-				Map.Entry elemento = (Map.Entry) iterator.next();
-				aux += "Ponto: " + elemento.getKey().toString() + " Quantidade: " + elemento.getValue();
-			}
-			return aux;
+	public String todosTiposEValoresPontos() {
+		if(_pontos.isEmpty()) return "";
+		String aux = "";
+		Set set = _pontos.entrySet();
+		Iterator iterator = set.iterator();
+		while(iterator.hasNext()) {
+			Map.Entry elemento = (Map.Entry) iterator.next();
+			aux += "Ponto: " + elemento.getKey().toString() + " Quantidade: " + elemento.getValue();
 		}
+		return aux;
 	}
 	
 	public HashMap<String, Integer> getPontos(){

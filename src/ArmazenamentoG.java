@@ -12,34 +12,13 @@ import java.util.Set;
 
 public class ArmazenamentoG implements Armazenamento {
 	
-	private ArrayList<Usuario> usuarios;
+	private ArrayList< Usuario> usuarios;
 	private String caminhoarquivo;
 	
 	public ArmazenamentoG(String caminhoarquivo) throws IOException {
 		this.caminhoarquivo = caminhoarquivo;
 		this.usuarios = new ArrayList<Usuario>();
 		usuarios = this.leArquivo();
-	}
-
-	public void adicionaPontosUsuario(Usuario usuario, int pontos, String tipo) throws IOException {
-		for(int i = 0; i < usuarios.size(); i++) {
-			if(usuarios.get(i).getNome() == usuario.getNome()) {
-				usuarios.get(i).adicionaPontos(tipo, pontos);
-				salvaNovosPontosUsuario(usuarios.get(i));
-			}
-		}
-//		if(usuarios.contains(usuario)) {
-//			usuario.adicionaPontos(tipo, pontos);
-//			salvaNovosPontosUsuario(usuario);
-//		}
-//		else throw new UsuarioNaoCadastradoException("Usuario nao cadastrado!!");
-	}
-	
-	public void salvaNovosPontosUsuario(Usuario usuario) throws IOException {
-		for(int i = 0; i < usuarios.size(); i++) {
-//			boolean noterase = i == 0? false : true;
-			registraUserArquivo(usuarios.get(i));
-		}
 	}
 	
 	public ArrayList<Usuario> retornaUsuariosComPonto(){
@@ -50,7 +29,7 @@ public class ArmazenamentoG implements Armazenamento {
 		return usuarioscompontos;
 	}
 
-	public ArrayList<Usuario> leArquivo() throws IOException {
+	private ArrayList<Usuario> leArquivo() throws IOException {
 		ArrayList<Usuario> _usuarios = new ArrayList<Usuario>();
 		BufferedReader buff = new BufferedReader(new FileReader(this.caminhoarquivo));
 		String linha = "";
@@ -72,51 +51,31 @@ public class ArmazenamentoG implements Armazenamento {
 			linha = buff.readLine();
 		}
 		buff.close();
-//		this.usuarios = _usuarios;
 		return _usuarios;
 	}
 	
 	public void registraNovoUser(Usuario user) throws IOException {
-		usuarios.clear();
-		usuarios = this.leArquivo();
-//		for(int i = 0; i < usuarios.size(); i++) {
-//			Usuario usuario = usuarios.get(i);
-//			System.out.println(usuario.getNome());
-//		}
-		if(usuarios.contains(user)) throw new UsuarioJaCadastradoException("Usuario ja estava cadastrado!!");
-		else this.usuarios.add(user);
-		this.registraUserArquivo(user);
-//		else this.registraUserArquivo(user);
-	}
-	
-	/*public void registraUserArquivo(Usuario user) throws IOException {
-//		boolean noterase = usuarios.contains(user)? true : false;
-		//ArrayList<Usuario> usuariosaux = leArquivo();
-		//boolean noterase = usuariosaux.contains(user)? true : false;
-		
-		FileWriter writer = new FileWriter(this.caminhoarquivo, true);
-		PrintWriter	printer = new PrintWriter(writer);
-//		printer.printf("%n");
-		printer.printf("user ");
-		printer.printf(user.getNome() + "%n");
-		HashMap<String, Integer> pontos = user.getPontos();
-		Set set = pontos.entrySet();
-		Iterator iterator = set.iterator();
-		while(iterator.hasNext()) {
-			Map.Entry elemento = (Map.Entry) iterator.next();
-			printer.printf("ponto ");
-			printer.printf(elemento.getKey().toString() + " ");
-			printer.printf(pontos.get(elemento.getKey()) + "%n");
+		this.usuarios.clear();
+		this.usuarios = this.leArquivo();
+		boolean existe = false;
+		for(int i = 0; i < usuarios.size(); i++) {
+			if(usuarios.get(i).getNome().equalsIgnoreCase(user.getNome())){
+				existe = true;
+				usuarios.set(i, user);
+				break;
+			}
 		}
-		writer.close();
-	}*/
-	
-	public void registraUserArquivo(Usuario usuarioold) throws IOException {
+		if(!existe) {
+			this.usuarios.add(user);	
+		}
+		this.registraUsersArquivo();
+	}
+		
+	private void registraUsersArquivo() throws IOException {
 		FileWriter writer = new FileWriter(this.caminhoarquivo, false);
 		PrintWriter	printer = new PrintWriter(writer);
 		for(int i = 0; i < usuarios.size(); i++) {
 			Usuario user = usuarios.get(i);
-		//		printer.printf("%n");
 			printer.printf("user ");
 			printer.printf(user.getNome() + "%n");
 			HashMap<String, Integer> pontos = user.getPontos();
@@ -127,8 +86,6 @@ public class ArmazenamentoG implements Armazenamento {
 				printer.printf("ponto ");
 				printer.printf(elemento.getKey().toString() + " ");
 				printer.printf(pontos.get(elemento.getKey()) + "%n");
-				System.out.println(elemento.getKey().toString());
-				System.out.println(pontos.get(elemento.getKey()));
 			}
 		}
 		writer.close();
@@ -136,28 +93,17 @@ public class ArmazenamentoG implements Armazenamento {
 	
 	public String retornaPontos(Usuario usuario, String tipo) {
 		if(usuarios.contains(usuario))
-			return "O usuário " + usuario.getNome() + " possuí " + usuario.quantidadePontosDeUmTipo(tipo) + " pontos do tipo " + tipo;
-		return "Usuário não contém pontos deste tipo";	
+			return "O usuario " + usuario.getNome() + " possui " + usuario.quantidadePontosDeUmTipo(tipo) + " pontos do tipo " + tipo;
+		return "Usuario nao contem pontos deste tipo";	
 	}
 
 	public void armazenaUsuario(Usuario usuario) {
 		this.usuarios.add(usuario);
 	}
 
-	public ArrayList<Usuario> getUsuarios() {
+	public ArrayList<Usuario> getUsuarios() throws IOException {
+		this.usuarios = leArquivo();
 		return this.usuarios;
-	}
-
-	@Override
-	public String retornaPlacar(String tipopontos) {
-		String aux = "";
-		for(int i = 0; i < usuarios.size(); i++) {
-			Usuario usuario = usuarios.get(i);
-			if(usuario.contemPontosTipo(tipopontos)) {
-				aux += "User: " + usuario.getNome() + " Pontos: " + usuario.quantidadePontosDeUmTipo(tipopontos) + "; ";
-			}
-		}
-		return aux;
 	}
 
 	@Override
@@ -168,12 +114,16 @@ public class ArmazenamentoG implements Armazenamento {
 	}
 
 	@Override
-	public String todosTiposEValoresPontos() throws UsuarioSemPontosRegistradosException {
+	public String todosTiposEValoresPontos() throws UsuarioSemPontosRegistradosException, IOException {
+		usuarios.clear();
+		usuarios = this.leArquivo();
 		String aux = "";
 		for(int i = 0; i < usuarios.size(); i++) {
 			Usuario usuario = usuarios.get(i);
-			aux += usuario.getNome() + " ";
-			aux += usuario.todosTiposEValoresPontos() + " ";
+			if(usuario.recebeuAlgumPonto()) {
+				aux += usuario.getNome() + " ";
+				aux += usuario.todosTiposEValoresPontos() + " ";	
+			}
 		}
 		return aux;
 	}

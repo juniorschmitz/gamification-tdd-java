@@ -9,23 +9,15 @@ public class ArmazenamentoMock implements Armazenamento{
 	}
 	
 	public void registraNovoUser(Usuario user) throws IOException {
-		if(usuarios.contains(user)) throw new UsuarioJaCadastradoException("Usuario ja estava cadastrado!!");
+		if(usuarios.contains(user)) return;
 		else this.usuarios.add(user);
-	}
-	
-	@Override
-	public void adicionaPontosUsuario(Usuario usuario, int pontos, String tipo) throws IOException {
-		if(usuarios.contains(usuario)) {
-			usuario.adicionaPontos(tipo, pontos);
-		}
-		else throw new UsuarioNaoCadastradoException("Usuario nao cadastrado!!");
 	}
 
 	@Override
 	public String retornaPontos(Usuario usuario, String tipo) {
 		if(usuarios.contains(usuario))
-			return "O usuário " + usuario.getNome() + " possuí " + usuario.quantidadePontosDeUmTipo(tipo) + " pontos do tipo " + tipo;
-		return "Usuário não contém pontos deste tipo";
+			return "O usuario " + usuario.getNome() + " possui " + usuario.quantidadePontosDeUmTipo(tipo) + " pontos do tipo " + tipo;
+		return "Usuario nao contem pontos deste tipo";
 	}
 	
 	@Override
@@ -33,18 +25,6 @@ public class ArmazenamentoMock implements Armazenamento{
 		if(usuarios.contains(usuario))
 			return usuario.todosTiposEValoresPontos();
 		return "usuario nao encontrado";
-	}
-
-	@Override
-	public String retornaPlacar(String tipopontos) {
-		String aux = "";
-		for(int i = 0; i < usuarios.size(); i++) {
-			Usuario usuario = usuarios.get(i);
-			if(usuario.contemPontosTipo(tipopontos)) {
-				aux += "User: " + usuario.getNome() + " Pontos: " + usuario.quantidadePontosDeUmTipo(tipopontos) + "; ";
-			}
-		}
-		return aux;
 	}
 
 	@Override

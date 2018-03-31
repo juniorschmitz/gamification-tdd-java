@@ -1,0 +1,14 @@
+user usuario1
+ponto moeda 300
+ponto estrela 200
+user usuario2
+ponto banana 300
+user usuario3
+user joao
+ponto estrela 100
+ponto bananaaaaa 200
+user usuario4
+ponto bananona 500
+user guerra
+ponto estrela 10
+user fernandes

@@ -7,7 +7,8 @@ public class Placar {
 	}
 
 	public String registraPontos(Usuario usuario, int quantidade, String tipoponto) throws IOException {
-		armazenamento.adicionaPontosUsuario(usuario, quantidade, tipoponto);
+		usuario.adicionaPontos(tipoponto, quantidade);
+		armazenamento.registraNovoUser(usuario);
 		return quantidade + " pontos do tipo " + tipoponto + " adicionados para o usuario " + usuario.getNome();
 	}
 
@@ -16,9 +17,13 @@ public class Placar {
 		return aux;
 	}
 
-	public String retornaRanking() {
+	public String retornaRanking() throws UsuarioSemPontosRegistradosException, IOException {
 		String aux = "Placar: ";
 		aux += armazenamento.todosTiposEValoresPontos();
 		return aux;
+	}
+
+	public void registraNovoUserNoPlacar(Usuario usuario) throws IOException {
+		this.armazenamento.registraNovoUser(usuario);
 	}
 }
